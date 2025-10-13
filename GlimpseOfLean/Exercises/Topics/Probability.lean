@@ -52,7 +52,11 @@ def IndepSet (A B : Set Ω) : Prop := ℙ (A ∩ B) = ℙ A * ℙ B
 
 /-- If `A` is independent of `B`, then `B` is independent of `A`. -/
 lemma IndepSet.symm : IndepSet A B → IndepSet B A := by
-  sorry
+  intro h
+  unfold IndepSet at *
+  rw [mul_comm, ← h]
+  rw [Set.inter_comm]
+
 
 /- Many lemmas in measure theory require sets to be measurable (`MeasurableSet A`),
 or to be equal to a measurable set up to a set of zero measure (`NullMeasurableSet A ℙ`).
@@ -62,7 +66,13 @@ try the `measurability` tactic. That tactic produces measurability proofs. -/
 -- Hints: `compl_eq_univ_diff`, `measure_diff`, `inter_univ`, `measure_compl`, `ENNReal.mul_sub`
 lemma IndepSet.compl_right (hA : MeasurableSet A) (hB : MeasurableSet B) :
     IndepSet A B → IndepSet A Bᶜ := by
-  sorry
+  intro h
+  unfold IndepSet at *
+  rw [measure_compl]
+  . rw [compl_eq_univ_diff, Set.inter_diff_distrib_left, inter_univ, measure_diff, ENNReal.mul_sub, h]
+    repeat measurability
+  . assumption
+  . simp
 
 /- Apply `IndepSet.compl_right` to prove this generalization. It is good practice to add the iff
 version of some frequently used lemmas, this allows us to use them inside `rw` tactics. -/
