@@ -78,7 +78,20 @@ lemma IndepSet.compl_right (hA : MeasurableSet A) (hB : MeasurableSet B) :
 version of some frequently used lemmas, this allows us to use them inside `rw` tactics. -/
 lemma IndepSet.compl_right_iff (hA : MeasurableSet A) (hB : MeasurableSet B) :
     IndepSet A Bᶜ ↔ IndepSet A B := by
-  sorry
+  constructor
+  . intro h
+    unfold IndepSet at *
+    rw [measure_compl] at h
+    . rw [compl_eq_univ_diff, Set.inter_diff_distrib_left, inter_univ, measure_diff, ENNReal.mul_sub] at h
+      simp at h
+      . sorry
+      repeat measurability
+    . assumption
+    . simp
+
+  . exact IndepSet.compl_right hA hB
+
+
 
 -- Use what you have proved so far
 lemma IndepSet.compl_left (hA : MeasurableSet A) (hB : MeasurableSet B) (h : IndepSet A B) :
