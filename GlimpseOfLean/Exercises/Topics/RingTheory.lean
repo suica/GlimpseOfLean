@@ -217,7 +217,11 @@ theorem kerLift_injective' (f : R →+* S) (x : R ⧸ ker f) (hx : kerLift f x =
   rcases Ideal.Quotient.mk_surjective x with ⟨x', hx'⟩
   rw [← hx']
   rw [← hx'] at hx
-  sorry
+  have := kerLift_mk f x'
+  rw [this] at hx
+  rw [Ideal.Quotient.eq_zero_iff_mem]
+  rw [mem_ker]
+  exact hx
 
 /-
 Let's restate that result using `Function.Injective`.
@@ -380,4 +384,3 @@ noncomputable def chineseIso [Fintype ι] (I : ι → Ideal R) (hI : ∀ i j, i 
 
 end Ideal
 end chinese
-
