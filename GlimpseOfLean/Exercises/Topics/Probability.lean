@@ -91,15 +91,29 @@ lemma IndepSet.compl_right_iff (hA : MeasurableSet A) (hB : MeasurableSet B) :
 -- Use what you have proved so far
 lemma IndepSet.compl_left (hA : MeasurableSet A) (hB : MeasurableSet B) (h : IndepSet A B) :
     IndepSet Aᶜ B := by
-  sorry
+  unfold IndepSet at *
+  rw [inter_comm] at *
+  rw [mul_comm] at *
+  apply IndepSet.compl_right
+  repeat measurability
+
 
 /- Can you write and prove a lemma `IndepSet.compl_left_iff`, following the examples above?-/
 
--- Your lemma here
+lemma IndepSet.compl_left_iff (hA : MeasurableSet A) (hB : MeasurableSet B) :
+    IndepSet Aᶜ B ↔ IndepSet A B := by
+    unfold IndepSet at *
+    rw [inter_comm, inter_comm A, mul_comm, mul_comm (ℙ A)]
+    apply IndepSet.compl_right_iff
+    repeat measurability
 
 -- Hint: `ENNReal.mul_self_eq_self_iff`
 lemma indep_self (h : IndepSet A A) : ℙ A = 0 ∨ ℙ A = 1 := by
-  sorry
+  unfold IndepSet at h
+  simp at h
+  rw [eq_comm] at h
+  have h1 := (ENNReal.mul_self_eq_self_iff (ℙ A)).mp h
+  measurability
 
 /-
 
