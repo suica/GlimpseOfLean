@@ -320,7 +320,10 @@ This map is always injective, without any assumption on the ideal family. This i
 on the injectivity from the previous section.
 -/
 lemma chineseMap_injective : Injective (chineseMap I) := by
-  sorry
+  rw [chineseMap, injective_lift_iff, ker_Pi_Quotient_mk]
+
+
+
 end definition_and_injectivity
 
 /-
