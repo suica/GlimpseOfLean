@@ -80,15 +80,10 @@ lemma IndepSet.compl_right_iff (hA : MeasurableSet A) (hB : MeasurableSet B) :
     IndepSet A Bᶜ ↔ IndepSet A B := by
   constructor
   . intro h
-    unfold IndepSet at *
-    rw [measure_compl] at h
-    . rw [compl_eq_univ_diff, Set.inter_diff_distrib_left, inter_univ, measure_diff, ENNReal.mul_sub] at h
-      simp at h
-      . sorry
-      repeat measurability
-    . assumption
-    . simp
-
+    rw [← compl_compl B]
+    apply IndepSet.compl_right
+    repeat measurability
+    done
   . exact IndepSet.compl_right hA hB
 
 
