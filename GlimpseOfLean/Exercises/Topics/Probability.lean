@@ -179,7 +179,25 @@ formalization rather than the standard mathematical statement.
 If you want to know more about how division works in Lean, try to hover over `/` with your mouse. -/
 
 theorem bayesTheorem' (A B : Set Ω) : ℙ(A|B) = ℙ A * ℙ(B|A) / ℙ B := by
-  sorry
+  -- simp
+  by_cases h: (ℙ A = 0)
+  by_cases h': (ℙ B = 0)
+  . simp
+    repeat rw [h, h']
+    simp
+    exact measure_inter_null_of_null_left B h
+  . apply bayesTheorem
+    exact h'
+  . simp
+    have : ℙ (B ∩ A) =  ℙ A * (ℙ (B ∩ A) / ℙ A) := by
+      rw [eq_comm]
+      apply ENNReal.mul_div_cancel
+      repeat measurability
+    rw [← this]
+    rw [inter_comm]
 
 lemma condProb_of_indepSet (h : IndepSet B A) (hB : ℙ B ≠ 0) : ℙ(A|B) = ℙ A := by
-  sorry
+  simp
+  rw [inter_comm, h, mul_comm]
+  rw [mul_div_assoc, ENNReal.div_self]
+  repeat measurability
