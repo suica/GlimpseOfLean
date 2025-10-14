@@ -122,6 +122,7 @@ lemma indep_self (h : IndepSet A A) : ℙ A = 0 ∨ ℙ A = 1 := by
 -/
 
 /-- The probability of set `A` conditioned on `B`. -/
+@[simp]
 def condProb (A B : Set Ω) : ENNReal := ℙ (A ∩ B) / ℙ B
 
 /- We define a notation for `condProb A B` that makes it look more like paper math. -/
@@ -134,11 +135,17 @@ properties of `condProb` first and then use those. -/
 -- Hint : `measure_inter_null_of_null_left`
 @[simp] -- this makes the lemma usable by `simp`
 lemma condProb_zero_left (A B : Set Ω) (hA : ℙ A = 0) : ℙ(A|B) = 0 := by
-  sorry
+  unfold condProb
+  have := measure_inter_null_of_null_left B hA
+  measurability
+
 
 @[simp]
 lemma condProb_zero_right (A B : Set Ω) (hB : ℙ B = 0) : ℙ(A|B) = 0 := by
-  sorry
+  unfold condProb
+  have := measure_inter_null_of_null_left A hB
+  rw [inter_comm]
+  measurability
 
 /- What other basic lemmas could be useful? Are there other "special" sets for which `condProb`
 takes known values? -/
@@ -152,8 +159,18 @@ There is no functional difference between those two keywords. -/
 theorem bayesTheorem (hB : ℙ B ≠ 0) : ℙ(A|B) = ℙ A * ℙ(B|A) / ℙ B := by
   by_cases h : ℙ A = 0 -- this tactic perfoms a case disjunction.
   -- Observe the goals that are created, and specifically the `h` assumption in both goals
-  · sorry
-  sorry
+  · rw [h]
+    simp
+    exact measure_inter_null_of_null_left B h
+  . simp
+    have : ℙ (B ∩ A) =  ℙ A * (ℙ (B ∩ A) / ℙ A) := by
+      rw [eq_comm]
+      apply ENNReal.mul_div_cancel
+      repeat measurability
+    rw [← this]
+    rw [inter_comm]
+
+
 
 /- Did you really need all those hypotheses?
 In Lean, division by zero follows the convention that `a/0 = 0` for all a. This means we can prove
