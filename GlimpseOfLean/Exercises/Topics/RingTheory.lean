@@ -246,9 +246,11 @@ def firstIsomorphismTheorem (f : R →+* S) (hf : Function.Surjective f) :
     invFun x := Ideal.Quotient.mk (ker f) (surjInv hf x)
     right_inv := rightInverse_surjInv hf
     map_mul' := by
-      sorry
+      intro x y
+      simp_all
     map_add' := by
-      sorry
+      intro x y
+      simp_all
     left_inv := by
       -- This is where it all comes together.
       -- Try following this proof sketch:
@@ -257,7 +259,12 @@ def firstIsomorphismTheorem (f : R →+* S) (hf : Function.Surjective f) :
       -- * Apply our theorem `kerLift_injective`.
       -- * Repeatedly rewrite `kerLift _ (Ideal.Quotient.mk _ _)` using `kerLift_mk`.
       -- * Finish by rewriting with `rightInverse_surjInv`.
-      sorry
+      intro x
+      simp_all
+      rcases Ideal.Quotient.mk_surjective x with ⟨x', hx'⟩
+      apply kerLift_injective
+      rw [kerLift_mk] at *
+      apply rightInverse_surjInv
     }
 
 end universal_property
@@ -294,7 +301,11 @@ product `Π` could be tricky to distinguish.
 
 def chineseMap  : (R ⧸ ⨅ i, I i) →+* Π i, R ⧸ I i :=
   Quotient.lift (⨅ i, I i) (Pi.ringHom fun i : ι ↦ Quotient.mk (I i))
-    (by sorry)
+    (by
+      intro a ha
+      rw [← ker_Pi_Quotient_mk] at ha
+      rw [ha]
+    )
 
 /- Let’s record two slighlty different spelling of how this map acts on elements, by definition. -/
 
