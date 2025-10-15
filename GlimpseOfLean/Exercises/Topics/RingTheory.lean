@@ -65,13 +65,13 @@ Try filling in the `sorry`s below using `intro` and `simp`.
 def RingHom.comp (g : S →+* T) (f : R →+* S) : R →+* T where
   toFun x := g (f x)
   map_one' := by
-    sorry
+    simp
   map_mul' := by
-    sorry
+    simp
   map_zero' := by
-    sorry
+    simp
   map_add' := by
-    sorry
+    simp
 
 /-
 A ring isomorphism between `R` and `S` is written `e : R ≃+* S`.
@@ -91,13 +91,15 @@ def RingEquiv.comp (g : S ≃+* T) (f : R ≃+* S) : R ≃+* T where
   toFun x := g (f x)
   invFun x := f.symm (g.symm x)
   left_inv := by
-    sorry
+    intro _
+    simp
   right_inv := by
-    sorry
+    intro _
+    simp
   map_add' := by
-    sorry
+    simp
   map_mul' := by
-    sorry
+    simp
 
 end homomorphisms
 
@@ -135,11 +137,32 @@ it is only an exercise).
 def Ideal.inter (I J : Ideal R) : Ideal R where
   carrier := I ∩ J
   add_mem' := by
-    sorry
+    intro a b ha hb
+    simp_all only [Set.mem_inter_iff, SetLike.mem_coe]
+    constructor
+    . obtain ⟨hai⟩ := ha
+      obtain ⟨hbi⟩ := hb
+      apply add_mem
+      . exact hai
+      . exact hbi
+    . obtain ⟨_, haj⟩ := ha
+      obtain ⟨_, hbj⟩ := hb
+      apply add_mem
+      . exact haj
+      . exact hbj
   zero_mem' := by
-    sorry
+    simp
   smul_mem' := by
-    sorry
+    intro c x hx
+    simp_all
+    constructor
+    . obtain ⟨hxi, hxj⟩ := hx
+      apply Ideal.mul_mem_left
+      simp_all
+    . obtain ⟨left, right⟩ := hx
+      apply Ideal.mul_mem_left
+      simp_all
+
 
 /-
 Finally, let's look at ideal quotients. If `I` is an ideal of the ring `R`,
@@ -188,13 +211,16 @@ variable {S} [CommRing S]
 
 def kerLift (f : R →+* S) : R ⧸ ker f →+* S :=
   Ideal.Quotient.lift (ker f) f fun x ↦ by
-    sorry
+    intro h
+    apply mem_ker.mp
+    exact h
 
 /-
 After a new definition, it is a good idea to make lemmas for its basic properties.
 -/
 theorem kerLift_mk (f : R →+* S) (x : R) : kerLift f (Ideal.Quotient.mk (ker f) x) = f x := by
-  sorry
+  simp_all [kerLift]
+
 
 /-
 When we are given a quotient element `x : R ⧸ I`, it is often a useful proof step to
