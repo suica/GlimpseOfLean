@@ -58,16 +58,18 @@ variable {φ : Variable → Prop} {A B : Formula}
 @[simp] lemma isTrue_neg : IsTrue φ ~A ↔ ¬ IsTrue φ A := by simp [neg]
 
 @[simp] lemma isTrue_top : IsTrue φ ⊤ := by
-  sorry
+  simp [top]
 
 @[simp] lemma isTrue_equiv : IsTrue φ (A ⇔ B) ↔ (IsTrue φ A ↔ IsTrue φ B) := by
-  sorry
+  simp_all [equiv]
+  aesop
 
 /- As an exercise, let's prove (using classical logic) the double negation elimination principle.
   `by_contra h` might be useful to prove something by contradiction. -/
 
 example : Valid (~~A ⇔ A) := by
-  sorry
+  intro _
+  simp
 
 /- We will frequently need to add an element to a set. This is done using
 the `insert` function: `insert A Γ` means `Γ ∪ {A}`. -/
@@ -137,11 +139,26 @@ example : {A, B} ⊢ A && B := by
 
 
 example : Provable (~~A ⇔ A) := by
-  sorry
+  simp_all [equiv]
+  apply andI
+  . apply impI
+    apply botC
+    apply impE _ (by apply_ax)
+    apply_ax
+  . apply impI
+    apply impI
+    apply impE (by apply_ax)
+    apply_ax
 
 /- Optional exercise: prove the law of excluded middle. -/
 example : Provable (A || ~A) := by
-  sorry
+  apply botC
+  apply impE (by apply_ax)
+  apply orI2
+  apply impI
+  apply impE (by apply_ax)
+  apply orI1
+  apply_ax
 
 /- Optional exercise: prove one of the de-Morgan laws.
   If you want to say that the argument called `A` of the axiom `impE` should be `X && Y`,
@@ -199,4 +216,3 @@ theorem valid_of_provable (h : Provable A) : Valid A := by
 -/
 
 end ClassicalPropositionalLogic
-
